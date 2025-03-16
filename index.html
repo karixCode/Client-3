@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заметки</title>
+    <title>Kanban Доска</title>
     <link rel="stylesheet" href="css/main.css">
     <script defer src="js/vue-dev.js"></script>
     <script defer src="js/main.js"></script>
@@ -11,22 +11,19 @@
 <body>
 <div id="app">
     <div class="modal-overlay" v-if="isModalVisible">
-        <form class="modal" @submit.prevent="addCard">
-            <h2>Создание карточки</h2>
+        <form class="modal" @submit.prevent="saveCard">
+            <h2>{{ isEditing ? 'Редактирование карточки' : 'Создание карточки' }}</h2>
             <label for="title">Заголовок</label>
-            <input id="title" type="text" v-model="newCard.title" required>
+            <input id="title" type="text" v-model="currentCard.title" required>
 
-            <label for="task1">Задача 1</label>
-            <input id="task1" type="text" v-model="newCard.tasks[0].text" required>
+            <label for="description">Описание</label>
+            <textarea id="description" v-model="currentCard.description" required></textarea>
 
-            <label for="task2">Задача 2</label>
-            <input id="task2" type="text" v-model="newCard.tasks[1].text" required>
+            <label for="deadline">Дедлайн</label>
+            <input id="deadline" type="date" v-model="currentCard.deadline" required>
 
-            <label for="task3">Задача 3</label>
-            <input id="task3" type="text" v-model="newCard.tasks[2].text" required>
-
-            <button type="submit">Создать</button>
-            <button type="button" @click="openModal(false)">Закрыть</button>
+            <button type="submit">{{ isEditing ? 'Сохранить' : 'Создать' }}</button>
+            <button type="button" @click="closeModal">Закрыть</button>
         </form>
     </div>
     <div class="columns">
@@ -35,10 +32,8 @@
                 :key="index"
                 :column="column"
                 :column-index="index"
-                :is-first-column-blocked="isFirstColumnBlocked && index === 0"
                 @add-card="openModal"
-                @add-task="addTask"
-                @task-updated="updateColumns">
+                @edit-card="editCard">
         </column-component>
     </div>
 </div>
