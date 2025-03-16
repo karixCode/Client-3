@@ -13,8 +13,9 @@ Vue.component('card-component', {
             <p><strong>Дедлайн:</strong> {{ card.deadline }}</p>
             <p><strong>Последнее редактирование:</strong> {{ card.updatedAt || 'Не редактировалось' }}</p>
             <button v-if="[0, 1, 2].includes(columnIndex)" @click="$emit('edit-card')">Редактировать</button>
+            <button v-if="columnIndex === 0" @click="$emit('delete-card')">Удалить</button>
         </div>
-    `
+    `,
 })
 
 Vue.component('column-component', {
@@ -35,7 +36,10 @@ Vue.component('column-component', {
                 v-for="(card, index) in column.cards"
                 :key="card.id"
                 :card="card"
+                :column-index="columnIndex"
+                :card-index="index"
                 @edit-card="$emit('edit-card', columnIndex, index)"
+                @delete-card="$emit('delete-card', columnIndex, index)"
             </card-component>
             <button v-if="columnIndex === 0" @click="$emit('add-card')">Добавить карточку</button>
         </div>
@@ -90,6 +94,10 @@ new Vue({
                 this.columns[0].cards.push({ ...this.currentCard, id: Date.now() })
             }
             this.closeModal()
+            this.saveData()
+        },
+        deleteCard(columnIndex, cardIndex) {
+            this.columns[columnIndex].cards.splice(cardIndex, 1)
             this.saveData()
         },
         closeModal() {
