@@ -10,7 +10,7 @@ Vue.component('card-component', {
         }
     },
     template: `
-        <div class="card">
+        <div class="card" :class="{ 'completed': card.status === 'Выполнено в срок', 'overdue': card.status === 'Просрочено', 'in-progress': columnIndex === 1 }">
             <h3>{{ card.title }}</h3>
             <p>{{ card.description }}</p>
             <p><strong>Создано:</strong> {{ card.createdAt }}</p>
@@ -18,10 +18,10 @@ Vue.component('card-component', {
             <p><strong>Последнее редактирование:</strong> {{ card.updatedAt || 'Не редактировалось' }}</p>
             <p v-if="card.returnReason"><strong>Причина возврата:</strong> {{ card.returnReason }}</p>
             <p v-if="card.status"><strong>Статус:</strong> {{ card.status }}</p>
-            <button v-if="columnIndex !== 3" @click="$emit('edit-card')">Редактировать</button>
-            <button v-if="columnIndex === 0" @click="$emit('delete-card')">Удалить</button>
-            <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)">Переместить</button>
-            <button v-if="columnIndex === 2" @click="returnToWork">Вернуть в работу</button>
+            <button v-if="columnIndex !== 3" @click="$emit('edit-card')" class="edit">Редактировать</button>
+            <button v-if="columnIndex === 0" @click="$emit('delete-card')" class="delete">Удалить</button>
+            <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)" class="move">Переместить</button>
+            <button v-if="columnIndex === 2" @click="returnToWork" class="return">Вернуть в работу</button>
         </div>
     `,
     methods: {
