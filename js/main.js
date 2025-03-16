@@ -7,7 +7,7 @@ Vue.component('card-component', {
         columnIndex: {
             type: Number,
             required: true
-        },
+        }
     },
     template: `
         <div class="card">
@@ -16,6 +16,8 @@ Vue.component('card-component', {
             <p><strong>Создано:</strong> {{ card.createdAt }}</p>
             <p><strong>Дедлайн:</strong> {{ card.deadline }}</p>
             <p><strong>Последнее редактирование:</strong> {{ card.updatedAt || 'Не редактировалось' }}</p>
+            <p v-if="card.returnReason"><strong>Причина возврата:</strong> {{ card.returnReason }}</p>
+            <p v-if="card.status"><strong>Статус:</strong> {{ card.status }}</p>
             <button v-if="columnIndex !== 3" @click="$emit('edit-card')">Редактировать</button>
             <button v-if="columnIndex === 0" @click="$emit('delete-card')">Удалить</button>
             <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)">Переместить</button>
@@ -120,6 +122,9 @@ new Vue({
                 const deadline = new Date(card.deadline)
                 const now = new Date()
                 card.status = deadline < now ? 'Просрочено' : 'Выполнено в срок'
+            }
+            if (reason) {
+                card.returnReason = reason
             }
             this.columns[toColumnIndex].cards.push(card)
             this.saveData()
