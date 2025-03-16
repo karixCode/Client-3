@@ -16,9 +16,10 @@ Vue.component('card-component', {
             <p><strong>Создано:</strong> {{ card.createdAt }}</p>
             <p><strong>Дедлайн:</strong> {{ card.deadline }}</p>
             <p><strong>Последнее редактирование:</strong> {{ card.updatedAt || 'Не редактировалось' }}</p>
-            <button v-if="[0, 1, 2].includes(columnIndex)" @click="$emit('edit-card')">Редактировать</button>
+            <button v-if="columnIndex !== 3" @click="$emit('edit-card')">Редактировать</button>
             <button v-if="columnIndex === 0" @click="$emit('delete-card')">Удалить</button>
             <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)">Переместить</button>
+            <button v-if="columnIndex === 2" @click="returnToWork">Вернуть в работу</button>
         </div>
     `,
     methods: {
@@ -49,8 +50,7 @@ Vue.component('column-component', {
                 v-for="(card, index) in column.cards"
                 :key="card.id"
                 :card="card"
-                :column-index="columnIndex"
-                :card-index="index"
+                :columnIndex="columnIndex"
                 @edit-card="$emit('edit-card', columnIndex, index)"
                 @delete-card="$emit('delete-card', columnIndex, index)"
                 @move-card="(toColumnIndex, reason) => $emit('move-card', columnIndex, index, toColumnIndex, reason)">
