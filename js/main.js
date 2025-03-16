@@ -21,6 +21,14 @@ Vue.component('card-component', {
             <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)">Переместить</button>
         </div>
     `,
+    methods: {
+        returnToWork() {
+            const reason = prompt('Укажите причину возврата:')
+            if (reason) {
+                this.$emit('move-card', 1, reason)
+            }
+        }
+    }
 })
 
 Vue.component('column-component', {
