@@ -4,6 +4,10 @@ Vue.component('card-component', {
             type: Object,
             required: true
         },
+        columnIndex: {
+            type: Number,
+            required: true
+        },
     },
     template: `
         <div class="card">
@@ -14,6 +18,7 @@ Vue.component('card-component', {
             <p><strong>Последнее редактирование:</strong> {{ card.updatedAt || 'Не редактировалось' }}</p>
             <button v-if="[0, 1, 2].includes(columnIndex)" @click="$emit('edit-card')">Редактировать</button>
             <button v-if="columnIndex === 0" @click="$emit('delete-card')">Удалить</button>
+            <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)">Переместить</button>
         </div>
     `,
 })
@@ -40,6 +45,7 @@ Vue.component('column-component', {
                 :card-index="index"
                 @edit-card="$emit('edit-card', columnIndex, index)"
                 @delete-card="$emit('delete-card', columnIndex, index)"
+                @move-card="(toColumnIndex, reason) => $emit('move-card', columnIndex, index, toColumnIndex, reason)">
             </card-component>
             <button v-if="columnIndex === 0" @click="$emit('add-card')">Добавить карточку</button>
         </div>
@@ -98,6 +104,16 @@ new Vue({
         },
         deleteCard(columnIndex, cardIndex) {
             this.columns[columnIndex].cards.splice(cardIndex, 1)
+            this.saveData()
+        },
+        moveCard(fromColumnIndex, cardIndex, toColumnIndex, reason) {
+            const card = this.columns[fromColumnIndex].cards.splice(cardIndex, 1)[0]
+            if (toColumnIndex === 3) {
+                const deadline = new Date(card.deadline)
+                const now = new Date()
+                card.status = deadline < now ? 'Просрочено' : 'Выполнено в срок'
+            }
+            this.columns[toColumnIndex].cards.push(card)
             this.saveData()
         },
         closeModal() {
