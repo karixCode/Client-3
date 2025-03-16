@@ -18,10 +18,12 @@ Vue.component('card-component', {
             <p><strong>Последнее редактирование:</strong> {{ card.updatedAt || 'Не редактировалось' }}</p>
             <p v-if="card.returnReason"><strong>Причина возврата:</strong> {{ card.returnReason }}</p>
             <p v-if="card.status"><strong>Статус:</strong> {{ card.status }}</p>
-            <button v-if="columnIndex !== 3" @click="$emit('edit-card')" class="edit">Редактировать</button>
-            <button v-if="columnIndex === 0" @click="$emit('delete-card')" class="delete">Удалить</button>
-            <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)" class="move">Переместить</button>
-            <button v-if="columnIndex === 2" @click="returnToWork" class="return">Вернуть в работу</button>
+            <div class="card-buttons">
+                <button v-if="columnIndex !== 3" @click="$emit('edit-card')" class="edit">Редактировать</button>
+                <button v-if="columnIndex < 3" @click="$emit('move-card', columnIndex + 1)" class="move">Переместить</button>
+                <button v-if="columnIndex === 0" @click="$emit('delete-card')" class="delete">Удалить</button>
+                <button v-if="columnIndex === 2" @click="returnToWork" class="return">Вернуть в работу</button>
+            </div>
         </div>
     `,
     methods: {
